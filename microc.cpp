@@ -1,40 +1,58 @@
 #include "ast.hpp"
+#include "parser/parser.h"
 
+#include <fstream>
 #include <iostream>
 
-using namespace microc::ast;
+
+namespace ast = microc::ast;
+
+namespace result {
+enum code_t {
+    success = 0,
+    missing_argument_error,
+    no_such_file_error,
+    parse_error
+};
+}
+
+int compile(std::istream& in, std::ostream& out) {
+    int success;
+    microc::Parser parser(in);
+
+    try {
+        success = parser.parse();
+    }
+    catch(const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return result::parse_error;
+    }
+
+    if(success != 0) {
+        std::cerr << "syntax error" << std::endl;
+        return result::parse_error;
+    }
+
+    ast::Program& prog = parser.prog();
+    out << "parsed:" << std::endl << prog << std::endl;
+
+    return result::success;
+}
 
 int main(int argc, char* argv[]) {
-    Program prog;
+    if(argc < 2) {
+        std::cerr << "usage: " << argv[0] << " FILE" << std::endl
+                  << "error: too few arguments" << std::endl;
+        return result::missing_argument_error;
+    }
 
-    prog.entities.push_back(std::make_unique<AssemblyEntity>("mov 0, %rax"));
-    prog.entities.push_back(std::make_unique<GlobalEntity>(
-        std::make_unique<VoidType>(), "x"
-    ));
+    std::ifstream f(argv[1]);
 
-    std::unique_ptr<FunctionEntity> fun = std::make_unique<FunctionEntity>(
-        std::make_unique<IntegerType>(4), "f"
-    );
-    std::vector< std::unique_ptr<Instruction> >& instrs = fun->instructions;
+    if(!f.is_open()) {
+        std::cerr << "usage: " << argv[0] << " FILE" << std::endl
+                  << "error: no such file or directory" << std::endl;
+        return result::no_such_file_error;
+    }
 
-    instrs.push_back(std::make_unique<DeclarationInstruction>(
-        std::make_unique<PointerType>(std::make_unique<CharType>(1), 4),
-        "toto",
-        std::make_unique<IntegerExpression>(42)
-    ));
-
-    instrs.push_back(std::make_unique<ExpressionInstruction>(
-        std::make_unique<AffectationExpression>(
-            std::make_unique<IdentExpression>("toto"),
-            std::make_unique<BinaryExpression>(BinaryExpression::Operator::Add,
-                std::make_unique<IdentExpression>("x"),
-                std::make_unique<IntegerExpression>(1)
-            )
-        )
-    ));
-
-    prog.entities.push_back(std::move(fun));
-
-    std::cout << prog;
-    return 0;
+    return compile(f, std::cout);
 }

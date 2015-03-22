@@ -2,9 +2,9 @@
 #define MICROC_AST_HPP
 
 #include <memory>
+#include <ostream>
 #include <string>
 #include <vector>
-#include <ostream>
 
 namespace microc {
 namespace ast {
