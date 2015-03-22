@@ -22,7 +22,7 @@
 
 prog
   :             {}
-  | entity prog { d_prog.entities.push_back(std::move($1)); }
+  | prog entity { d_prog.entities.push_back(std::move($2)); }
 ;
 
 entity

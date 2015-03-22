@@ -60,6 +60,6 @@ sizeof                              return Parser::SIZEOF;
 \]                                  return Parser::CSBRA;
 (0x[0-9a-fA-F]+)|(0b[01]+)|([0-9]+) return Parser::INTEGER;
 \'([^\']|\\[0nrt])\'                return Parser::CHARACTER;
-\"[^\"]*\"                          return Parser::STRING;
+\"(\\.|[^\"])*\"                    return Parser::STRING;
 [a-z_][_0-9A-Za-z]*                 return Parser::IDENT;
 .|\n                                throw scanner_exception(lineNr(), matched());

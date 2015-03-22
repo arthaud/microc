@@ -47,7 +47,30 @@ inline void Parser::exceptionHandler__(const std::exception&) {
 }
 
 std::string Parser::sanitizeStringToken(const std::string& str) {
-    std::string val = str.substr(1, str.length() - 2);
+    std::string val;
+    val.reserve(str.length() - 2);
+
+    for(std::size_t i = 1; i < str.length() - 1; ++i) {
+        if(str[i] == '\\' && i + 1 < str.length() - 1) {
+            ++i;
+            if(str[i] == 'n') {
+                val += '\n';
+            }
+            else if(str[i] == 'r') {
+                val += '\r';
+            }
+            else if(str[i] == 't') {
+                val += '\t';
+            }
+            else {
+                val += str[i];
+            }
+        }
+        else {
+            val += str[i];
+        }
+    }
+
     return val;
 }
 
