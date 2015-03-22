@@ -4,23 +4,23 @@ namespace microc
 {
 
 parser_exception::parser_exception(int line, const std::string& matched):
-    line(line), matched(matched)
+    line_(line), matched_(matched)
 {
     std::stringstream ss;
     ss << "error line " << line << ", unexpected token \"" << matched << "\"";
-    description = ss.str();
+    description_ = ss.str();
 }
 
 const char* parser_exception::what() const noexcept {
-    return description.c_str();
+    return description_.c_str();
 }
 
-int parser_exception::get_line() const noexcept {
-    return line;
+int parser_exception::line() const noexcept {
+    return line_;
 }
 
-const std::string& parser_exception::get_matched() const noexcept {
-    return matched;
+const std::string& parser_exception::matched() const noexcept {
+    return matched_;
 }
 
 Parser::Parser(std::istream &in): d_scanner(in)

@@ -137,7 +137,7 @@ namespace ast {
         right(std::move(r))
     {}
 
-    const char* UnaryExpression::operator_cstr(Operator op) {
+    const char* UnaryExpression::operator_str(Operator op) {
         switch(op) {
             case UnaryExpression::Operator::Plus:  return "+";
             case UnaryExpression::Operator::Minus: return "-";
@@ -150,7 +150,7 @@ namespace ast {
         v.visit(*this);
     }
 
-    const char* BinaryExpression::operator_cstr(Operator op) {
+    const char* BinaryExpression::operator_str(Operator op) {
         switch(op) {
             case BinaryExpression::Operator::Add: return "+";
             case BinaryExpression::Operator::Sub: return "-";
@@ -194,7 +194,7 @@ namespace ast {
      */
     Type::~Type() {}
 
-    std::size_t VoidType::getSize() const {
+    std::size_t VoidType::size() const {
         return 0;
     }
 
@@ -202,10 +202,10 @@ namespace ast {
         v.visit(*this);
     }
 
-    ScalarType::ScalarType(std::size_t s): size(s) {}
+    ScalarType::ScalarType(std::size_t size): size_(size) {}
 
-    std::size_t ScalarType::getSize() const {
-        return size;
+    std::size_t ScalarType::size() const {
+        return size_;
     }
 
     void IntegerType::accept(TypeVisitor& v) const {
@@ -224,17 +224,17 @@ namespace ast {
         v.visit(*this);
     }
 
-    PointerType::PointerType(std::unique_ptr<Type> t, std::size_t s):
-        ScalarType(s),
-        pointedType(std::move(t))
+    PointerType::PointerType(std::unique_ptr<Type> pointed_type, std::size_t size):
+        ScalarType(size),
+        pointed_type_(std::move(pointed_type))
     {}
 
     void PointerType::accept(TypeVisitor& v) const {
         v.visit(*this);
     }
 
-    Type* PointerType::getPointedType() const {
-        return pointedType.get();
+    Type* PointerType::pointed_type() const {
+        return pointed_type_.get();
     }
 
     /*
@@ -341,6 +341,9 @@ namespace ast {
         else if(expr.value == '\t') {
             o << "'\\t'";
         }
+        else if(expr.value == '\'') {
+            o << "'\\''";
+        }
         else {
             o << "'" << expr.value << "'";
         }
@@ -363,13 +366,13 @@ namespace ast {
     }
 
     void PrintExpressionVisitor::visit(const UnaryExpression& expr) {
-        o << UnaryExpression::operator_cstr(expr.op);
+        o << UnaryExpression::operator_str(expr.op);
         o << '(' << *expr.expression << ')';
     }
 
     void PrintExpressionVisitor::visit(const BinaryExpression& expr) {
         o << '(' << *expr.left << ')';
-        o << BinaryExpression::operator_cstr(expr.op);
+        o << BinaryExpression::operator_str(expr.op);
         o << '(' << *expr.right << ')';
     }
 
@@ -424,7 +427,7 @@ namespace ast {
     }
 
     void PrintTypeVisitor::visit(const PointerType& type) {
-        o << "pointer on " << *type.getPointedType();
+        o << "pointer on " << *type.pointed_type();
     }
 
     std::ostream& operator<<(std::ostream& o, const Program& prog) {

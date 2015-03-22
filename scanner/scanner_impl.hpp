@@ -5,7 +5,7 @@
 namespace microc {
 
 scanner_exception::scanner_exception(int line, const std::string& matched):
-    line(line), matched(matched)
+    line_(line), matched_(matched)
 {
     std::stringstream ss;
     ss << "error line " << line;
@@ -17,19 +17,19 @@ scanner_exception::scanner_exception(int line, const std::string& matched):
         ss << ", near \"" << matched << "\"";
     }
 
-    description = ss.str();
+    description_ = ss.str();
 }
 
 const char* scanner_exception::what() const noexcept {
-    return description.c_str();
+    return description_.c_str();
 }
 
-int scanner_exception::get_line() const noexcept {
-    return line;
+int scanner_exception::line() const noexcept {
+    return line_;
 }
 
-const std::string& scanner_exception::get_matched() const noexcept {
-    return matched;
+const std::string& scanner_exception::matched() const noexcept {
+    return matched_;
 }
 
 }

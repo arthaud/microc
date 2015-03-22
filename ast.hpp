@@ -26,13 +26,13 @@ namespace ast {
     class Entity {
         public:
             virtual ~Entity() = 0;
-            virtual void accept(EntityVisitor& v) const = 0;
+            virtual void accept(EntityVisitor&) const = 0;
     };
 
     class AssemblyEntity : public Entity {
         public:
-            AssemblyEntity(const std::string&);
-            virtual void accept(EntityVisitor& v) const;
+            explicit AssemblyEntity(const std::string&);
+            virtual void accept(EntityVisitor&) const;
 
         public:
             std::string assembly;
@@ -41,7 +41,7 @@ namespace ast {
     class GlobalEntity : public Entity {
         public:
             GlobalEntity(std::unique_ptr<Type>, const std::string&);
-            virtual void accept(EntityVisitor& v) const;
+            virtual void accept(EntityVisitor&) const;
 
         public:
             std::unique_ptr<Type> type;
@@ -57,7 +57,7 @@ namespace ast {
     class FunctionEntity : public Entity {
         public:
             FunctionEntity(std::unique_ptr<Type>, const std::string&);
-            virtual void accept(EntityVisitor& v) const;
+            virtual void accept(EntityVisitor&) const;
 
         public:
             std::unique_ptr<Type> return_type;
@@ -72,12 +72,12 @@ namespace ast {
     class Instruction {
         public:
             virtual ~Instruction() = 0;
-            virtual void accept(InstructionVisitor& v) const = 0;
+            virtual void accept(InstructionVisitor&) const = 0;
     };
 
     class BlockInstruction : public Instruction {
         public:
-            virtual void accept(InstructionVisitor& v) const;
+            virtual void accept(InstructionVisitor&) const;
 
         public:
             std::vector< std::unique_ptr<Instruction> > instructions;
@@ -86,7 +86,7 @@ namespace ast {
     class DeclarationInstruction : public Instruction {
         public:
             DeclarationInstruction(std::unique_ptr<Type>, const std::string&, std::unique_ptr<Expression>);
-            virtual void accept(InstructionVisitor& v) const;
+            virtual void accept(InstructionVisitor&) const;
 
         public:
             std::unique_ptr<Type> type;
@@ -96,8 +96,8 @@ namespace ast {
 
     class ExpressionInstruction : public Instruction {
         public:
-            ExpressionInstruction(std::unique_ptr<Expression>);
-            virtual void accept(InstructionVisitor& v) const;
+            explicit ExpressionInstruction(std::unique_ptr<Expression>);
+            virtual void accept(InstructionVisitor&) const;
 
         public:
             std::unique_ptr<Expression> expression;
@@ -105,8 +105,8 @@ namespace ast {
 
     class IfInstruction : public Instruction {
         public:
-            IfInstruction(std::unique_ptr<Expression>);
-            virtual void accept(InstructionVisitor& v) const;
+            explicit IfInstruction(std::unique_ptr<Expression>);
+            virtual void accept(InstructionVisitor&) const;
 
         public:
             std::unique_ptr<Expression> condition;
@@ -116,8 +116,8 @@ namespace ast {
 
     class WhileInstruction : public Instruction {
         public:
-            WhileInstruction(std::unique_ptr<Expression>);
-            virtual void accept(InstructionVisitor& v) const;
+            explicit WhileInstruction(std::unique_ptr<Expression>);
+            virtual void accept(InstructionVisitor&) const;
 
         public:
             std::unique_ptr<Expression> condition;
@@ -126,8 +126,8 @@ namespace ast {
 
     class ReturnInstruction : public Instruction {
         public:
-            ReturnInstruction(std::unique_ptr<Expression>);
-            virtual void accept(InstructionVisitor& v) const;
+            explicit ReturnInstruction(std::unique_ptr<Expression>);
+            virtual void accept(InstructionVisitor&) const;
 
         public:
             std::unique_ptr<Expression> expression;
@@ -135,8 +135,8 @@ namespace ast {
 
     class AssemblyInstruction : public Instruction {
         public:
-            AssemblyInstruction(const std::string&);
-            virtual void accept(InstructionVisitor& v) const;
+            explicit AssemblyInstruction(const std::string&);
+            virtual void accept(InstructionVisitor&) const;
 
         public:
             std::string assembly;
@@ -148,13 +148,13 @@ namespace ast {
     class Expression {
         public:
             virtual ~Expression() = 0;
-            virtual void accept(ExpressionVisitor& v) const = 0;
+            virtual void accept(ExpressionVisitor&) const = 0;
     };
 
     class IdentExpression : public Expression {
         public:
-            IdentExpression(const std::string&);
-            virtual void accept(ExpressionVisitor& v) const;
+            explicit IdentExpression(const std::string&);
+            virtual void accept(ExpressionVisitor&) const;
 
         public:
             std::string name;
@@ -163,8 +163,8 @@ namespace ast {
     template<typename T>
     class ValueExpression : public Expression {
         public:
-            ValueExpression(const T& v): value(v) {}
-            virtual void accept(ExpressionVisitor& v) const;
+            explicit ValueExpression(const T& value): value(value) {}
+            virtual void accept(ExpressionVisitor&) const;
 
         public:
             T value;
@@ -176,17 +176,17 @@ namespace ast {
 
     class TrueExpression : public Expression {
         public:
-            virtual void accept(ExpressionVisitor& v) const;
+            virtual void accept(ExpressionVisitor&) const;
     };
 
     class FalseExpression : public Expression {
         public:
-            virtual void accept(ExpressionVisitor& v) const;
+            virtual void accept(ExpressionVisitor&) const;
     };
 
     class NullExpression : public Expression {
         public:
-            virtual void accept(ExpressionVisitor& v) const;
+            virtual void accept(ExpressionVisitor&) const;
     };
 
     class UnaryExpression : public Expression {
@@ -197,11 +197,11 @@ namespace ast {
                 Not
             };
 
-            static const char* operator_cstr(Operator op);
+            static const char* operator_str(Operator op);
 
         public:
             UnaryExpression(Operator, std::unique_ptr<Expression>);
-            virtual void accept(ExpressionVisitor& v) const;
+            virtual void accept(ExpressionVisitor&) const;
 
         public:
             Operator op;
@@ -216,11 +216,11 @@ namespace ast {
                 Mul
             };
 
-            static const char* operator_cstr(Operator op);
+            static const char* operator_str(Operator op);
 
         public:
             BinaryExpression(Operator, std::unique_ptr<Expression>, std::unique_ptr<Expression>);
-            virtual void accept(ExpressionVisitor& v) const;
+            virtual void accept(ExpressionVisitor&) const;
 
         public:
             Operator op;
@@ -231,7 +231,7 @@ namespace ast {
     class AffectationExpression : public Expression {
         public:
             AffectationExpression(std::unique_ptr<Expression>, std::unique_ptr<Expression>);
-            virtual void accept(ExpressionVisitor& v) const;
+            virtual void accept(ExpressionVisitor&) const;
 
         public:
             std::unique_ptr<Expression> affected;
@@ -241,7 +241,7 @@ namespace ast {
     class CastExpression : public Expression {
         public:
             CastExpression(std::unique_ptr<Type>, std::unique_ptr<Expression>);
-            virtual void accept(ExpressionVisitor& v) const;
+            virtual void accept(ExpressionVisitor&) const;
 
         public:
             std::unique_ptr<Type> type;
@@ -250,8 +250,8 @@ namespace ast {
 
     class AccessExpression : public Expression {
         public:
-            AccessExpression(std::unique_ptr<Expression>);
-            virtual void accept(ExpressionVisitor& v) const;
+            explicit AccessExpression(std::unique_ptr<Expression>);
+            virtual void accept(ExpressionVisitor&) const;
 
         public:
             std::unique_ptr<Expression> expression;
@@ -259,8 +259,8 @@ namespace ast {
 
     class CallExpression : public Expression {
         public:
-            CallExpression(const std::string&);
-            virtual void accept(ExpressionVisitor& v) const;
+            explicit CallExpression(const std::string&);
+            virtual void accept(ExpressionVisitor&) const;
 
         public:
             std::string function_name;
@@ -275,56 +275,56 @@ namespace ast {
         public:
             virtual ~Type() = 0;
             virtual void accept(TypeVisitor& v) const = 0;
-            virtual std::size_t getSize() const = 0;
+            virtual std::size_t size() const = 0;
     };
 
     class VoidType : public Type {
         public:
-            virtual std::size_t getSize() const;
-            virtual void accept(TypeVisitor& v) const;
+            virtual std::size_t size() const;
+            virtual void accept(TypeVisitor&) const;
     };
 
     class ScalarType : public Type {
         public:
-            ScalarType(std::size_t size);
-            virtual std::size_t getSize() const;
+            explicit ScalarType(std::size_t size);
+            virtual std::size_t size() const;
 
         private:
-            std::size_t size;
+            std::size_t size_;
     };
 
     class IntegerType : public ScalarType {
         public:
             using ScalarType::ScalarType;
-            virtual void accept(TypeVisitor& v) const;
+            virtual void accept(TypeVisitor&) const;
     };
 
     class BooleanType : public ScalarType {
         public:
             using ScalarType::ScalarType;
-            virtual void accept(TypeVisitor& v) const;
+            virtual void accept(TypeVisitor&) const;
     };
 
     class CharType : public ScalarType {
         public:
             using ScalarType::ScalarType;
-            virtual void accept(TypeVisitor& v) const;
+            virtual void accept(TypeVisitor&) const;
     };
 
     class NullType : public ScalarType {
         public:
             using ScalarType::ScalarType;
-            virtual void accept(TypeVisitor& v) const;
+            virtual void accept(TypeVisitor&) const;
     };
 
     class PointerType : public ScalarType {
         public:
-            PointerType(std::unique_ptr<Type> pointedType, std::size_t size);
-            virtual void accept(TypeVisitor& v) const;
-            Type* getPointedType() const;
+            PointerType(std::unique_ptr<Type> pointed_type, std::size_t size);
+            virtual void accept(TypeVisitor&) const;
+            Type* pointed_type() const;
 
         private:
-            std::unique_ptr<Type> pointedType;
+            std::unique_ptr<Type> pointed_type_;
     };
 
     /*
@@ -380,7 +380,7 @@ namespace ast {
      */
     class PrintEntityVisitor : public EntityVisitor {
         public:
-            PrintEntityVisitor(std::ostream& o);
+            explicit PrintEntityVisitor(std::ostream&);
             void visit(const AssemblyEntity&);
             void visit(const GlobalEntity&);
             void visit(const FunctionEntity&);
@@ -391,7 +391,7 @@ namespace ast {
 
     class PrintInstructionVisitor : public InstructionVisitor {
         public:
-            PrintInstructionVisitor(std::ostream& o);
+            explicit PrintInstructionVisitor(std::ostream&);
             virtual void visit(const BlockInstruction&);
             virtual void visit(const DeclarationInstruction&);
             virtual void visit(const ExpressionInstruction&);
@@ -406,7 +406,7 @@ namespace ast {
 
     class PrintExpressionVisitor : public ExpressionVisitor {
         public:
-            PrintExpressionVisitor(std::ostream& o);
+            explicit PrintExpressionVisitor(std::ostream&);
             virtual void visit(const IdentExpression&);
             virtual void visit(const IntegerExpression&);
             virtual void visit(const CharExpression&);
@@ -427,7 +427,7 @@ namespace ast {
 
     class PrintTypeVisitor : public TypeVisitor {
         public:
-            PrintTypeVisitor(std::ostream& o);
+            explicit PrintTypeVisitor(std::ostream&);
             virtual void visit(const VoidType&);
             virtual void visit(const IntegerType&);
             virtual void visit(const BooleanType&);
