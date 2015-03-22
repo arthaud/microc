@@ -27,4 +27,8 @@
 *.out
 *.app
 
+scanner/lex.cc
+scanner/scannerbase.h
+parser/parse.cc
+parser/parserbase.h
 microc
