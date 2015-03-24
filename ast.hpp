@@ -117,8 +117,8 @@ namespace ast {
 
         public:
             std::unique_ptr<Expression> condition;
-            BlockInstruction true_block;
-            BlockInstruction false_block;
+            std::vector<std::unique_ptr<Instruction>> true_instrs;
+            std::vector<std::unique_ptr<Instruction>> false_instrs;
     };
 
     class WhileInstruction : public Instruction {
@@ -128,7 +128,7 @@ namespace ast {
 
         public:
             std::unique_ptr<Expression> condition;
-            BlockInstruction block;
+            std::vector<std::unique_ptr<Instruction>> instructions;
     };
 
     class ReturnInstruction : public Instruction {

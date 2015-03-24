@@ -23,7 +23,7 @@
 %type <PROGRAM> prog
 %type <ENTITY> entity
 %type <PARAMETERS> parameters, parameters_end
-%type <INSTRUCTIONS> instructions
+%type <INSTRUCTIONS> instructions, else
 %type <INSTRUCTION> instruction
 %type <EXPRESSION> expression
 %type <ARGUMENTS> arguments, arguments_end
@@ -96,14 +96,43 @@ instructions
 instruction
   : OCBRA instructions CCBRA
       { $$ = std::make_unique<ast::BlockInstruction>(std::move($2)); }
-  | ASM OPAR string CPAR SEMICOLON
-      { $$ = std::make_unique<ast::AssemblyInstruction>($3); }
   | type ident SEMICOLON
       { $$ = std::make_unique<ast::DeclarationInstruction>(std::move($1), $2, nullptr); }
   | type ident AFFECT expression SEMICOLON
       { $$ = std::make_unique<ast::DeclarationInstruction>(std::move($1), $2, std::move($4)); }
   | expression SEMICOLON
       { $$ = std::make_unique<ast::ExpressionInstruction>(std::move($1)); }
+  | IF OPAR expression CPAR OCBRA instructions CCBRA else
+      {
+        auto e = std::make_unique<ast::IfInstruction>(std::move($3));
+        e->true_instrs = std::move($6);
+        e->false_instrs = std::move($8);
+        $$ = std::move(e);
+      }
+  | WHILE OPAR expression CPAR OCBRA instructions CCBRA
+      {
+        auto e = std::make_unique<ast::WhileInstruction>(std::move($3));
+        e->instructions = std::move($6);
+        $$ = std::move(e);
+      }
+  | RETURN expression SEMICOLON
+      { $$ = std::make_unique<ast::ReturnInstruction>(std::move($2)); }
+  | ASM OPAR string CPAR SEMICOLON
+      { $$ = std::make_unique<ast::AssemblyInstruction>($3); }
+;
+
+else
+  :   { $$ = std::vector<std::unique_ptr<ast::Instruction>>(); }
+  | ELSE IF OPAR expression CPAR OCBRA instructions CCBRA else
+      {
+        auto e = std::make_unique<ast::IfInstruction>(std::move($4));
+        e->true_instrs = std::move($7);
+        e->false_instrs = std::move($9);
+        $$ = std::vector<std::unique_ptr<ast::Instruction>>();
+        $<INSTRUCTIONS>$.push_back(std::move(e));
+      }
+  | ELSE OCBRA instructions CCBRA
+      { $$ = std::move($3); }
 ;
 
 expression

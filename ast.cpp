@@ -291,7 +291,7 @@ namespace ast {
         bool first_argument = true;
         o << *entity.return_type << " " << entity.name << "(";
         
-        for(const FunctionArgument& arg : entity.arguments) {
+        for(const auto& arg : entity.arguments) {
             if(!first_argument) {
                 o << ", ";
             }
@@ -302,7 +302,7 @@ namespace ast {
 
         o << ") {" << std::endl;
 
-        for(const std::unique_ptr<Instruction>& instr : entity.instructions) {
+        for(const auto& instr : entity.instructions) {
             o << *instr << std::endl;
         }
 
@@ -314,7 +314,7 @@ namespace ast {
     void PrintInstructionVisitor::visit(const BlockInstruction& instr) {
         o << "{" << std::endl;
 
-        for(const std::unique_ptr<Instruction>& ins : instr.instructions) {
+        for(const auto& ins : instr.instructions) {
             o << *ins << std::endl;
         }
 
@@ -336,15 +336,29 @@ namespace ast {
     }
 
     void PrintInstructionVisitor::visit(const IfInstruction& instr) {
-        o << "if (" << *instr.condition << ") ";
-        o << instr.true_block;
-        o << std::endl << "else ";
-        o << instr.false_block;
+        o << "if (" << *instr.condition << ") {" << std::endl;
+
+        for(const auto& ins : instr.true_instrs) {
+            o << *ins << std::endl;
+        }
+
+        o << "}" << std::endl << "else {" << std::endl;
+
+        for(const auto& ins : instr.false_instrs) {
+            o << *ins << std::endl;
+        }
+
+        o << "}";
     }
 
     void PrintInstructionVisitor::visit(const WhileInstruction& instr) {
-        o << "while (" << *instr.condition << ") ";
-        o << instr.block;
+        o << "while (" << *instr.condition << ") {" << std::endl;
+
+        for(const auto& ins : instr.instructions) {
+            o << *ins << std::endl;
+        }
+
+        o << "}";
     }
 
     void PrintInstructionVisitor::visit(const ReturnInstruction& instr) {
@@ -429,12 +443,12 @@ namespace ast {
         bool first_argument = true;
         o << expr.function_name << "(";
 
-        for(const std::unique_ptr<Expression>& e : expr.arguments) {
+        for(const auto& e : expr.arguments) {
             if(!first_argument) {
                 o << ", ";
             }
 
-            o << *e << std::endl;
+            o << *e;
             first_argument = false;
         }
 
@@ -470,7 +484,7 @@ namespace ast {
     std::ostream& operator<<(std::ostream& o, const Program& prog) {
         o << "program {" << std::endl;
 
-        for(const std::unique_ptr<Entity>& entity : prog.entities) {
+        for(const auto& entity : prog.entities) {
             o << *entity << std::endl;
         }
 
