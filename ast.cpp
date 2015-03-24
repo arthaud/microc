@@ -160,9 +160,10 @@ namespace ast {
 
     const char* UnaryExpression::operator_str(Operator op) {
         switch(op) {
-            case UnaryExpression::Operator::Plus:  return "+";
-            case UnaryExpression::Operator::Minus: return "-";
-            case UnaryExpression::Operator::Not:   return "!";
+            case UnaryExpression::Operator::Plus:   return "+";
+            case UnaryExpression::Operator::Minus:  return "-";
+            case UnaryExpression::Operator::Not:    return "!";
+            case UnaryExpression::Operator::BitNot: return "~";
             default: assert(false && "unknown unary operator");
         }
     }
@@ -173,9 +174,24 @@ namespace ast {
 
     const char* BinaryExpression::operator_str(Operator op) {
         switch(op) {
-            case BinaryExpression::Operator::Add: return "+";
-            case BinaryExpression::Operator::Sub: return "-";
-            case BinaryExpression::Operator::Mul: return "*";
+            case BinaryExpression::Operator::Add:    return "+";
+            case BinaryExpression::Operator::Sub:    return "-";
+            case BinaryExpression::Operator::Mul:    return "*";
+            case BinaryExpression::Operator::Div:    return "/";
+            case BinaryExpression::Operator::Mod:    return "%";
+            case BinaryExpression::Operator::Or:     return "||";
+            case BinaryExpression::Operator::And:    return "&&";
+            case BinaryExpression::Operator::BitOr:  return "|";
+            case BinaryExpression::Operator::BitAnd: return "&";
+            case BinaryExpression::Operator::BitXor: return "^";
+            case BinaryExpression::Operator::Eq:     return "==";
+            case BinaryExpression::Operator::Neq:    return "!=";
+            case BinaryExpression::Operator::Inf:    return "<";
+            case BinaryExpression::Operator::InfEq:  return "<=";
+            case BinaryExpression::Operator::Sup:    return ">";
+            case BinaryExpression::Operator::SupEq:  return ">=";
+            case BinaryExpression::Operator::Lshift: return "<<";
+            case BinaryExpression::Operator::Rshift: return ">>";
             default: assert(false && "unknown binary operator");
         }
     }

@@ -201,7 +201,8 @@ namespace ast {
             enum class Operator {
                 Plus,
                 Minus,
-                Not
+                Not,
+                BitNot,
             };
 
             static const char* operator_str(Operator op);
@@ -220,7 +221,22 @@ namespace ast {
             enum class Operator {
                 Add,
                 Sub,
-                Mul
+                Mul,
+                Div,
+                Mod,
+                Or,
+                And,
+                BitOr,
+                BitAnd,
+                BitXor,
+                Eq,
+                Neq,
+                Inf,
+                InfEq,
+                Sup,
+                SupEq,
+                Lshift,
+                Rshift,
             };
 
             static const char* operator_str(Operator op);
