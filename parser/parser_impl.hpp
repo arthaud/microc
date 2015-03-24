@@ -7,7 +7,15 @@ parser_exception::parser_exception(int line, const std::string& matched):
     line_(line), matched_(matched)
 {
     std::stringstream ss;
-    ss << "error line " << line << ", unexpected token \"" << matched << "\"";
+    ss << "error line " << line;
+
+    if(matched.empty()) {
+        ss << ", unexpected end of file";
+    }
+    else {
+        ss << ", unexpected token \"" << matched << "\"";
+    }
+
     description_ = ss.str();
 }
 
