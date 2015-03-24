@@ -15,7 +15,7 @@ namespace ast {
         v.visit(*this);
     }
 
-    GlobalEntity::GlobalEntity(std::unique_ptr<Type> t, const std::string& n):
+    GlobalEntity::GlobalEntity(std::unique_ptr<Type>&& t, const std::string& n):
         type(std::move(t)),
         name(n)
     {}
@@ -24,7 +24,22 @@ namespace ast {
         v.visit(*this);
     }
 
-    FunctionEntity::FunctionEntity(std::unique_ptr<Type> t, const std::string& n):
+    FunctionArgument::FunctionArgument(std::unique_ptr<Type>&& t, const std::string& n):
+        type(std::move(t)),
+        name(n)
+    {}
+
+    FunctionArgument::FunctionArgument(FunctionArgument&& f):
+        type(std::move(f.type)),
+        name(std::move(f.name))
+    {}
+
+    FunctionArgument& FunctionArgument::operator=(FunctionArgument&& f) {
+        type = std::move(f.type);
+        name = std::move(f.name);
+    }
+
+    FunctionEntity::FunctionEntity(std::unique_ptr<Type>&& t, const std::string& n):
         return_type(std::move(t)),
         name(n)
     {}
@@ -42,7 +57,7 @@ namespace ast {
         v.visit(*this);
     }
 
-    DeclarationInstruction::DeclarationInstruction(std::unique_ptr<Type> t, const std::string& n, std::unique_ptr<Expression> e):
+    DeclarationInstruction::DeclarationInstruction(std::unique_ptr<Type>&& t, const std::string& n, std::unique_ptr<Expression>&& e):
         type(std::move(t)),
         name(n),
         expression(std::move(e))
@@ -52,7 +67,7 @@ namespace ast {
         v.visit(*this);
     }
 
-    ExpressionInstruction::ExpressionInstruction(std::unique_ptr<Expression> e):
+    ExpressionInstruction::ExpressionInstruction(std::unique_ptr<Expression>&& e):
         expression(std::move(e))
     {}
 
@@ -60,19 +75,19 @@ namespace ast {
         v.visit(*this);
     }
 
-    IfInstruction::IfInstruction(std::unique_ptr<Expression> c): condition(std::move(c)) {}
+    IfInstruction::IfInstruction(std::unique_ptr<Expression>&& c): condition(std::move(c)) {}
 
     void IfInstruction::accept(InstructionVisitor& v) const {
         v.visit(*this);
     }
 
-    WhileInstruction::WhileInstruction(std::unique_ptr<Expression> c): condition(std::move(c)) {}
+    WhileInstruction::WhileInstruction(std::unique_ptr<Expression>&& c): condition(std::move(c)) {}
 
     void WhileInstruction::accept(InstructionVisitor& v) const {
         v.visit(*this);
     }
 
-    ReturnInstruction::ReturnInstruction(std::unique_ptr<Expression> e): expression(std::move(e)) {}
+    ReturnInstruction::ReturnInstruction(std::unique_ptr<Expression>&& e): expression(std::move(e)) {}
 
     void ReturnInstruction::accept(InstructionVisitor& v) const {
         v.visit(*this);
@@ -122,7 +137,7 @@ namespace ast {
         v.visit(*this);
     }
 
-    UnaryExpression::UnaryExpression(Operator o, std::unique_ptr<Expression> e):
+    UnaryExpression::UnaryExpression(Operator o, std::unique_ptr<Expression>&& e):
         op(o),
         expression(std::move(e))
     {}
@@ -131,7 +146,7 @@ namespace ast {
         v.visit(*this);
     }
 
-    BinaryExpression::BinaryExpression(Operator o, std::unique_ptr<Expression> l, std::unique_ptr<Expression> r):
+    BinaryExpression::BinaryExpression(Operator o, std::unique_ptr<Expression>&& l, std::unique_ptr<Expression>&& r):
         op(o),
         left(std::move(l)),
         right(std::move(r))
@@ -159,7 +174,7 @@ namespace ast {
         }
     }
 
-    AffectationExpression::AffectationExpression(std::unique_ptr<Expression> a, std::unique_ptr<Expression> v):
+    AffectationExpression::AffectationExpression(std::unique_ptr<Expression>&& a, std::unique_ptr<Expression>&& v):
         affected(std::move(a)),
         value(std::move(v))
     {}
@@ -168,7 +183,7 @@ namespace ast {
         v.visit(*this);
     }
 
-    CastExpression::CastExpression(std::unique_ptr<Type> t, std::unique_ptr<Expression> e):
+    CastExpression::CastExpression(std::unique_ptr<Type>&& t, std::unique_ptr<Expression>&& e):
         type(std::move(t)),
         expression(std::move(e))
     {}
@@ -177,7 +192,7 @@ namespace ast {
         v.visit(*this);
     }
 
-    AccessExpression::AccessExpression(std::unique_ptr<Expression> e): expression(std::move(e)) {}
+    AccessExpression::AccessExpression(std::unique_ptr<Expression>&& e): expression(std::move(e)) {}
 
     void AccessExpression::accept(ExpressionVisitor& v) const {
         v.visit(*this);
@@ -224,7 +239,7 @@ namespace ast {
         v.visit(*this);
     }
 
-    PointerType::PointerType(std::unique_ptr<Type> pointed_type, std::size_t size):
+    PointerType::PointerType(std::unique_ptr<Type>&& pointed_type, std::size_t size):
         ScalarType(size),
         pointed_type_(std::move(pointed_type))
     {}
