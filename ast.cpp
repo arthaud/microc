@@ -53,6 +53,12 @@ namespace ast {
      */
     Instruction::~Instruction() {}
 
+    BlockInstruction::BlockInstruction() {}
+
+    BlockInstruction::BlockInstruction(std::vector<std::unique_ptr<Instruction>>&& instructions):
+        instructions(std::move(instructions))
+    {}
+
     void BlockInstruction::accept(InstructionVisitor& v) const {
         v.visit(*this);
     }

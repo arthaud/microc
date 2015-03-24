@@ -20,7 +20,7 @@ namespace ast {
 
     class Program {
         public:
-            std::vector< std::unique_ptr<Entity> > entities;
+            std::vector<std::unique_ptr<Entity>> entities;
     };
 
     class Entity {
@@ -68,7 +68,7 @@ namespace ast {
             std::unique_ptr<Type> return_type;
             std::string name;
             std::vector<FunctionArgument> arguments;
-            std::vector< std::unique_ptr<Instruction> > instructions;
+            std::vector<std::unique_ptr<Instruction>> instructions;
     };
 
     /*
@@ -82,10 +82,12 @@ namespace ast {
 
     class BlockInstruction : public Instruction {
         public:
+            BlockInstruction();
+            BlockInstruction(std::vector<std::unique_ptr<Instruction>>&&);
             virtual void accept(InstructionVisitor&) const;
 
         public:
-            std::vector< std::unique_ptr<Instruction> > instructions;
+            std::vector<std::unique_ptr<Instruction>> instructions;
     };
 
     class DeclarationInstruction : public Instruction {
@@ -269,7 +271,7 @@ namespace ast {
 
         public:
             std::string function_name;
-            std::vector< std::unique_ptr<Expression> > arguments;
+            std::vector<std::unique_ptr<Expression>> arguments;
     };
 
     /*
