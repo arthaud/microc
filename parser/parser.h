@@ -52,6 +52,8 @@ class Parser: public ParserBase
         void print__();
         void exceptionHandler__(std::exception const &exc);
 
+        int sanitizeIntegerToken(const std::string&);
+        char sanitizeCharacterToken(const std::string&);
         std::string sanitizeStringToken(const std::string&);
 };
 

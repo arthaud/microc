@@ -54,6 +54,39 @@ inline void Parser::exceptionHandler__(const std::exception&) {
     throw;              // re-implement to handle exceptions thrown by actions
 }
 
+int Parser::sanitizeIntegerToken(const std::string& str) {
+    if(str.length() >= 3 && str[0] == '0' && str[1] == 'x') {
+        return std::strtol(str.substr(2).c_str(), NULL, 16);
+    }
+    else if(str.length() >= 3 && str[0] == '0' && str[1] == 'b') {
+        return std::strtol(str.substr(2).c_str(), NULL, 2);
+    }
+    else {
+        return std::atoi(str.c_str());
+    }
+}
+
+char Parser::sanitizeCharacterToken(const std::string& str) {
+    if(str == "'\\0'") {
+        return '\0';
+    }
+    else if(str == "'\\n'") {
+        return '\n';
+    }
+    else if(str == "'\\r'") {
+        return '\r';
+    }
+    else if(str == "'\\t'") {
+        return '\t';
+    }
+    else if(str == "'\\''") {
+        return '\'';
+    }
+    else {
+        return str[1];
+    }
+}
+
 std::string Parser::sanitizeStringToken(const std::string& str) {
     std::string val;
     val.reserve(str.length() - 2);
