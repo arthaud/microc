@@ -29,16 +29,6 @@ namespace ast {
         name(n)
     {}
 
-    FunctionArgument::FunctionArgument(FunctionArgument&& f):
-        type(std::move(f.type)),
-        name(std::move(f.name))
-    {}
-
-    FunctionArgument& FunctionArgument::operator=(FunctionArgument&& f) {
-        type = std::move(f.type);
-        name = std::move(f.name);
-    }
-
     FunctionEntity::FunctionEntity(std::unique_ptr<Type>&& t, const std::string& n):
         return_type(std::move(t)),
         name(n)
@@ -52,8 +42,6 @@ namespace ast {
      * Instructions
      */
     Instruction::~Instruction() {}
-
-    BlockInstruction::BlockInstruction() {}
 
     BlockInstruction::BlockInstruction(std::vector<std::unique_ptr<Instruction>>&& instructions):
         instructions(std::move(instructions))

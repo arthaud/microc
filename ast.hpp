@@ -51,8 +51,8 @@ namespace ast {
     class FunctionArgument {
         public:
             FunctionArgument(std::unique_ptr<Type>&&, const std::string&);
-            FunctionArgument(FunctionArgument&&);
-            FunctionArgument& operator=(FunctionArgument&&);
+            FunctionArgument(FunctionArgument&&) = default;
+            FunctionArgument& operator=(FunctionArgument&&) = default;
 
         public:
             std::unique_ptr<Type> type;
@@ -82,8 +82,8 @@ namespace ast {
 
     class BlockInstruction : public Instruction {
         public:
-            BlockInstruction();
-            BlockInstruction(std::vector<std::unique_ptr<Instruction>>&&);
+            explicit BlockInstruction() = default;
+            explicit BlockInstruction(std::vector<std::unique_ptr<Instruction>>&&);
             virtual void accept(InstructionVisitor&) const;
 
         public:
