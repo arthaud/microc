@@ -1,7 +1,6 @@
 #include "parser.h"
 
-namespace microc
-{
+namespace microc {
 
 parser_exception::parser_exception(int line, const std::string& matched):
     line_(line), matched_(matched)
@@ -115,4 +114,4 @@ std::string Parser::sanitizeStringToken(const std::string& str) {
     return val;
 }
 
-}
+} // namespace microc

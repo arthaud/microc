@@ -32,4 +32,4 @@ const std::string& scanner_exception::matched() const noexcept {
     return matched_;
 }
 
-}
+} // namespace microc

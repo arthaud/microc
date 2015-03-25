@@ -8,8 +8,7 @@
 #include <exception>
 #include <sstream>
 
-namespace microc
-{
+namespace microc {
 
 class scanner_exception : public std::exception {
     public:
@@ -25,8 +24,7 @@ class scanner_exception : public std::exception {
         std::string description_;
 };
 
-class Scanner: public ScannerBase
-{
+class Scanner: public ScannerBase {
     public:
         explicit Scanner(std::istream &in = std::cin,
                                 std::ostream &out = std::cout);
@@ -72,6 +70,6 @@ inline void Scanner::print() {
     print__();
 }
 
-}
+} // namespace microc
 
 #endif // MICROC_SCANNER_SCANNER_H

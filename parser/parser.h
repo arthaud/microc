@@ -10,8 +10,7 @@
 #include <exception>
 #include <sstream>
 
-namespace microc
-{
+namespace microc {
 
 class parser_exception : public std::exception {
     public:
@@ -28,8 +27,7 @@ class parser_exception : public std::exception {
 };
 
 #undef Parser
-class Parser: public ParserBase
-{
+class Parser: public ParserBase {
     Scanner d_scanner;
     ast::Program d_prog;
 
@@ -57,6 +55,6 @@ class Parser: public ParserBase
         std::string sanitizeStringToken(const std::string&);
 };
 
-}
+} // namespace microc
 
 #endif // MICROC_PARSER_PARSER_H
