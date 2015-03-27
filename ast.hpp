@@ -464,67 +464,6 @@ class TypeVisitor {
 /*
  * operator<<
  */
-class PrintEntityVisitor : public EntityVisitor {
-    public:
-        explicit PrintEntityVisitor(std::ostream&);
-        void visit(const AssemblyEntity&);
-        void visit(const GlobalEntity&);
-        void visit(const FunctionEntity&);
-
-    private:
-        std::ostream& o;
-};
-
-class PrintInstructionVisitor : public InstructionVisitor {
-    public:
-        explicit PrintInstructionVisitor(std::ostream&);
-        virtual void visit(const BlockInstruction&);
-        virtual void visit(const DeclarationInstruction&);
-        virtual void visit(const ExpressionInstruction&);
-        virtual void visit(const IfInstruction&);
-        virtual void visit(const WhileInstruction&);
-        virtual void visit(const ReturnInstruction&);
-        virtual void visit(const AssemblyInstruction&);
-
-    private:
-        std::ostream& o;
-};
-
-class PrintExpressionVisitor : public ExpressionVisitor {
-    public:
-        explicit PrintExpressionVisitor(std::ostream&);
-        virtual void visit(const IdentExpression&);
-        virtual void visit(const IntegerExpression&);
-        virtual void visit(const CharExpression&);
-        virtual void visit(const StringExpression&);
-        virtual void visit(const TrueExpression&);
-        virtual void visit(const FalseExpression&);
-        virtual void visit(const NullExpression&);
-        virtual void visit(const UnaryExpression&);
-        virtual void visit(const BinaryExpression&);
-        virtual void visit(const AffectationExpression&);
-        virtual void visit(const CastExpression&);
-        virtual void visit(const AccessExpression&);
-        virtual void visit(const CallExpression&);
-
-    private:
-        std::ostream& o;
-};
-
-class PrintTypeVisitor : public TypeVisitor {
-    public:
-        explicit PrintTypeVisitor(std::ostream&);
-        virtual void visit(const VoidType&);
-        virtual void visit(const IntegerType&);
-        virtual void visit(const BooleanType&);
-        virtual void visit(const CharType&);
-        virtual void visit(const NullType&);
-        virtual void visit(const PointerType&);
-
-    private:
-        std::ostream& o;
-};
-
 std::ostream& operator<<(std::ostream& o, const Program& prog);
 std::ostream& operator<<(std::ostream& o, const Entity& entity);
 std::ostream& operator<<(std::ostream& o, const Instruction& instr);
