@@ -20,16 +20,4 @@ scanner_exception::scanner_exception(int line, const std::string& matched):
     description_ = ss.str();
 }
 
-const char* scanner_exception::what() const noexcept {
-    return description_.c_str();
-}
-
-int scanner_exception::line() const noexcept {
-    return line_;
-}
-
-const std::string& scanner_exception::matched() const noexcept {
-    return matched_;
-}
-
 } // namespace microc

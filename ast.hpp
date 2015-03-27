@@ -32,7 +32,7 @@ class Entity {
 
 class AssemblyEntity : public Entity {
     public:
-        explicit AssemblyEntity(const std::string&);
+        explicit AssemblyEntity(const std::string& s): assembly(s) {}
         virtual void accept(EntityVisitor&) const;
 
     public:
@@ -41,7 +41,11 @@ class AssemblyEntity : public Entity {
 
 class GlobalEntity : public Entity {
     public:
-        GlobalEntity(std::unique_ptr<Type>&&, const std::string&);
+        GlobalEntity(std::unique_ptr<Type>&& type, const std::string& name):
+            type(std::move(type)),
+            name(name)
+        {}
+
         virtual void accept(EntityVisitor&) const;
 
     public:
@@ -51,7 +55,11 @@ class GlobalEntity : public Entity {
 
 class FunctionArgument {
     public:
-        FunctionArgument(std::unique_ptr<Type>&&, const std::string&);
+        FunctionArgument(std::unique_ptr<Type>&& type, const std::string& name):
+            type(std::move(type)),
+            name(name)
+        {}
+
         FunctionArgument(FunctionArgument&&) = default;
         FunctionArgument& operator=(FunctionArgument&&) = default;
 
@@ -62,7 +70,11 @@ class FunctionArgument {
 
 class FunctionEntity : public Entity {
     public:
-        FunctionEntity(std::unique_ptr<Type>&&, const std::string&);
+        FunctionEntity(std::unique_ptr<Type>&& return_type, const std::string& name):
+            return_type(std::move(return_type)),
+            name(name)
+        {}
+
         virtual void accept(EntityVisitor&) const;
 
     public:
@@ -84,7 +96,10 @@ class Instruction {
 class BlockInstruction : public Instruction {
     public:
         explicit BlockInstruction() = default;
-        explicit BlockInstruction(std::vector<std::unique_ptr<Instruction>>&&);
+        explicit BlockInstruction(std::vector<std::unique_ptr<Instruction>>&& instructions):
+            instructions(std::move(instructions))
+        {}
+
         virtual void accept(InstructionVisitor&) const;
 
     public:
@@ -93,7 +108,12 @@ class BlockInstruction : public Instruction {
 
 class DeclarationInstruction : public Instruction {
     public:
-        DeclarationInstruction(std::unique_ptr<Type>&&, const std::string&, std::unique_ptr<Expression>&&);
+        DeclarationInstruction(std::unique_ptr<Type>&& type, const std::string& name, std::unique_ptr<Expression>&& expression):
+            type(std::move(type)),
+            name(name),
+            expression(std::move(expression))
+        {}
+
         virtual void accept(InstructionVisitor&) const;
 
     public:
@@ -104,7 +124,10 @@ class DeclarationInstruction : public Instruction {
 
 class ExpressionInstruction : public Instruction {
     public:
-        explicit ExpressionInstruction(std::unique_ptr<Expression>&&);
+        explicit ExpressionInstruction(std::unique_ptr<Expression>&& expression):
+            expression(std::move(expression))
+        {}
+
         virtual void accept(InstructionVisitor&) const;
 
     public:
@@ -113,7 +136,10 @@ class ExpressionInstruction : public Instruction {
 
 class IfInstruction : public Instruction {
     public:
-        explicit IfInstruction(std::unique_ptr<Expression>&&);
+        explicit IfInstruction(std::unique_ptr<Expression>&& cond):
+            condition(std::move(cond))
+        {}
+
         virtual void accept(InstructionVisitor&) const;
 
     public:
@@ -124,7 +150,10 @@ class IfInstruction : public Instruction {
 
 class WhileInstruction : public Instruction {
     public:
-        explicit WhileInstruction(std::unique_ptr<Expression>&&);
+        explicit WhileInstruction(std::unique_ptr<Expression>&& cond):
+            condition(std::move(cond))
+        {}
+
         virtual void accept(InstructionVisitor&) const;
 
     public:
@@ -134,7 +163,10 @@ class WhileInstruction : public Instruction {
 
 class ReturnInstruction : public Instruction {
     public:
-        explicit ReturnInstruction(std::unique_ptr<Expression>&&);
+        explicit ReturnInstruction(std::unique_ptr<Expression>&& expression):
+            expression(std::move(expression))
+        {}
+
         virtual void accept(InstructionVisitor&) const;
 
     public:
@@ -143,7 +175,7 @@ class ReturnInstruction : public Instruction {
 
 class AssemblyInstruction : public Instruction {
     public:
-        explicit AssemblyInstruction(const std::string&);
+        explicit AssemblyInstruction(const std::string& a): assembly(a) {}
         virtual void accept(InstructionVisitor&) const;
 
     public:
@@ -161,7 +193,7 @@ class Expression {
 
 class IdentExpression : public Expression {
     public:
-        explicit IdentExpression(const std::string&);
+        explicit IdentExpression(const std::string& name): name(name) {}
         virtual void accept(ExpressionVisitor&) const;
 
     public:
@@ -209,7 +241,11 @@ class UnaryExpression : public Expression {
         static const char* operator_str(Operator op);
 
     public:
-        UnaryExpression(Operator, std::unique_ptr<Expression>&&);
+        UnaryExpression(Operator op, std::unique_ptr<Expression>&& expression):
+            op(op),
+            expression(std::move(expression))
+        {}
+
         virtual void accept(ExpressionVisitor&) const;
 
     public:
@@ -243,7 +279,12 @@ class BinaryExpression : public Expression {
         static const char* operator_str(Operator op);
 
     public:
-        BinaryExpression(Operator, std::unique_ptr<Expression>&&, std::unique_ptr<Expression>&&);
+        BinaryExpression(Operator op, std::unique_ptr<Expression>&& left, std::unique_ptr<Expression>&& right):
+            op(op),
+            left(std::move(left)),
+            right(std::move(right))
+        {}
+
         virtual void accept(ExpressionVisitor&) const;
 
     public:
@@ -254,7 +295,11 @@ class BinaryExpression : public Expression {
 
 class AffectationExpression : public Expression {
     public:
-        AffectationExpression(std::unique_ptr<Expression>&&, std::unique_ptr<Expression>&&);
+        AffectationExpression(std::unique_ptr<Expression>&& affected, std::unique_ptr<Expression>&& value):
+            affected(std::move(affected)),
+            value(std::move(value))
+        {}
+
         virtual void accept(ExpressionVisitor&) const;
 
     public:
@@ -264,7 +309,11 @@ class AffectationExpression : public Expression {
 
 class CastExpression : public Expression {
     public:
-        CastExpression(std::unique_ptr<Type>&&, std::unique_ptr<Expression>&&);
+        CastExpression(std::unique_ptr<Type>&& type, std::unique_ptr<Expression>&& expression):
+            type(std::move(type)),
+            expression(std::move(expression))
+        {}
+
         virtual void accept(ExpressionVisitor&) const;
 
     public:
@@ -274,7 +323,10 @@ class CastExpression : public Expression {
 
 class AccessExpression : public Expression {
     public:
-        explicit AccessExpression(std::unique_ptr<Expression>&&);
+        explicit AccessExpression(std::unique_ptr<Expression>&& expression):
+            expression(std::move(expression))
+        {}
+
         virtual void accept(ExpressionVisitor&) const;
 
     public:
@@ -283,7 +335,10 @@ class AccessExpression : public Expression {
 
 class CallExpression : public Expression {
     public:
-        explicit CallExpression(const std::string&);
+        explicit CallExpression(const std::string& name):
+            function_name(name)
+        {}
+
         virtual void accept(ExpressionVisitor&) const;
 
     public:
@@ -310,7 +365,7 @@ class VoidType : public Type {
 
 class ScalarType : public Type {
     public:
-        explicit ScalarType(std::size_t size);
+        explicit ScalarType(std::size_t size): size_(size) {}
         virtual std::size_t size() const;
 
     private:
@@ -343,9 +398,13 @@ class NullType : public ScalarType {
 
 class PointerType : public ScalarType {
     public:
-        PointerType(std::unique_ptr<Type>&& pointed_type, std::size_t size);
+        PointerType(std::unique_ptr<Type>&& pointed_type, std::size_t size):
+            ScalarType(size),
+            pointed_type_(std::move(pointed_type))
+        {}
+
         virtual void accept(TypeVisitor&) const;
-        Type* pointed_type() const;
+        Type* pointed_type() const { return pointed_type_.get(); }
 
     private:
         std::unique_ptr<Type> pointed_type_;

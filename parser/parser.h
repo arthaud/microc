@@ -15,10 +15,12 @@ namespace microc {
 class parser_exception : public std::exception {
     public:
         parser_exception(int line, const std::string& matched);
-        virtual const char* what() const noexcept;
+        virtual const char* what() const noexcept {
+            return description_.c_str();
+        }
 
-        int line() const noexcept;
-        const std::string& matched() const noexcept;
+        int line() const noexcept { return line_; }
+        const std::string& matched() const noexcept { return matched_; }
 
     private:
         int line_;
@@ -32,8 +34,8 @@ class Parser: public ParserBase {
     ast::Program d_prog;
 
     public:
-        explicit Parser(std::istream &in = std::cin);
-        ast::Program& prog();
+        explicit Parser(std::istream &in = std::cin): d_scanner(in) {}
+        ast::Program& prog() { return d_prog; }
         int parse();
 
     private:

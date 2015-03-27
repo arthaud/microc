@@ -13,10 +13,12 @@ namespace microc {
 class scanner_exception : public std::exception {
     public:
         scanner_exception(int line, const std::string& matched);
-        virtual const char* what() const noexcept;
+        virtual const char* what() const noexcept {
+            return description_.c_str();
+        }
 
-        int line() const noexcept;
-        const std::string& matched() const noexcept;
+        int line() const noexcept { return line_; }
+        const std::string& matched() const noexcept { return matched_; }
 
     private:
         int line_;

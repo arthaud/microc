@@ -10,30 +10,13 @@ namespace ast {
  */
 Entity::~Entity() {}
 
-AssemblyEntity::AssemblyEntity(const std::string& s): assembly(s) {}
-
 void AssemblyEntity::accept(EntityVisitor& v) const {
     v.visit(*this);
 }
 
-GlobalEntity::GlobalEntity(std::unique_ptr<Type>&& t, const std::string& n):
-    type(std::move(t)),
-    name(n)
-{}
-
 void GlobalEntity::accept(EntityVisitor& v) const {
     v.visit(*this);
 }
-
-FunctionArgument::FunctionArgument(std::unique_ptr<Type>&& t, const std::string& n):
-    type(std::move(t)),
-    name(n)
-{}
-
-FunctionEntity::FunctionEntity(std::unique_ptr<Type>&& t, const std::string& n):
-    return_type(std::move(t)),
-    name(n)
-{}
 
 void FunctionEntity::accept(EntityVisitor& v) const {
     v.visit(*this);
@@ -44,51 +27,29 @@ void FunctionEntity::accept(EntityVisitor& v) const {
  */
 Instruction::~Instruction() {}
 
-BlockInstruction::BlockInstruction(std::vector<std::unique_ptr<Instruction>>&& instructions):
-    instructions(std::move(instructions))
-{}
-
 void BlockInstruction::accept(InstructionVisitor& v) const {
     v.visit(*this);
 }
-
-DeclarationInstruction::DeclarationInstruction(std::unique_ptr<Type>&& t, const std::string& n, std::unique_ptr<Expression>&& e):
-    type(std::move(t)),
-    name(n),
-    expression(std::move(e))
-{}
 
 void DeclarationInstruction::accept(InstructionVisitor& v) const {
     v.visit(*this);
 }
 
-ExpressionInstruction::ExpressionInstruction(std::unique_ptr<Expression>&& e):
-    expression(std::move(e))
-{}
-
 void ExpressionInstruction::accept(InstructionVisitor& v) const {
     v.visit(*this);
 }
-
-IfInstruction::IfInstruction(std::unique_ptr<Expression>&& c): condition(std::move(c)) {}
 
 void IfInstruction::accept(InstructionVisitor& v) const {
     v.visit(*this);
 }
 
-WhileInstruction::WhileInstruction(std::unique_ptr<Expression>&& c): condition(std::move(c)) {}
-
 void WhileInstruction::accept(InstructionVisitor& v) const {
     v.visit(*this);
 }
 
-ReturnInstruction::ReturnInstruction(std::unique_ptr<Expression>&& e): expression(std::move(e)) {}
-
 void ReturnInstruction::accept(InstructionVisitor& v) const {
     v.visit(*this);
 }
-
-AssemblyInstruction::AssemblyInstruction(const std::string& a): assembly(a) {}
 
 void AssemblyInstruction::accept(InstructionVisitor& v) const {
     v.visit(*this);
@@ -98,8 +59,6 @@ void AssemblyInstruction::accept(InstructionVisitor& v) const {
  * Expressions
  */
 Expression::~Expression() {}
-
-IdentExpression::IdentExpression(const std::string& n) : name(n) {}
 
 void IdentExpression::accept(ExpressionVisitor& v) const {
     v.visit(*this);
@@ -132,20 +91,9 @@ void NullExpression::accept(ExpressionVisitor& v) const {
     v.visit(*this);
 }
 
-UnaryExpression::UnaryExpression(Operator o, std::unique_ptr<Expression>&& e):
-    op(o),
-    expression(std::move(e))
-{}
-
 void UnaryExpression::accept(ExpressionVisitor& v) const {
     v.visit(*this);
 }
-
-BinaryExpression::BinaryExpression(Operator o, std::unique_ptr<Expression>&& l, std::unique_ptr<Expression>&& r):
-    op(o),
-    left(std::move(l)),
-    right(std::move(r))
-{}
 
 const char* UnaryExpression::operator_str(Operator op) {
     switch(op) {
@@ -185,31 +133,17 @@ const char* BinaryExpression::operator_str(Operator op) {
     }
 }
 
-AffectationExpression::AffectationExpression(std::unique_ptr<Expression>&& a, std::unique_ptr<Expression>&& v):
-    affected(std::move(a)),
-    value(std::move(v))
-{}
-
 void AffectationExpression::accept(ExpressionVisitor& v) const {
     v.visit(*this);
 }
-
-CastExpression::CastExpression(std::unique_ptr<Type>&& t, std::unique_ptr<Expression>&& e):
-    type(std::move(t)),
-    expression(std::move(e))
-{}
 
 void CastExpression::accept(ExpressionVisitor& v) const {
     v.visit(*this);
 }
 
-AccessExpression::AccessExpression(std::unique_ptr<Expression>&& e): expression(std::move(e)) {}
-
 void AccessExpression::accept(ExpressionVisitor& v) const {
     v.visit(*this);
 }
-
-CallExpression::CallExpression(const std::string& n): function_name(n) {}
 
 void CallExpression::accept(ExpressionVisitor& v) const {
     v.visit(*this);
@@ -227,8 +161,6 @@ std::size_t VoidType::size() const {
 void VoidType::accept(TypeVisitor& v) const {
     v.visit(*this);
 }
-
-ScalarType::ScalarType(std::size_t size): size_(size) {}
 
 std::size_t ScalarType::size() const {
     return size_;
@@ -250,17 +182,8 @@ void NullType::accept(TypeVisitor& v) const {
     v.visit(*this);
 }
 
-PointerType::PointerType(std::unique_ptr<Type>&& pointed_type, std::size_t size):
-    ScalarType(size),
-    pointed_type_(std::move(pointed_type))
-{}
-
 void PointerType::accept(TypeVisitor& v) const {
     v.visit(*this);
-}
-
-Type* PointerType::pointed_type() const {
-    return pointed_type_.get();
 }
 
 /*

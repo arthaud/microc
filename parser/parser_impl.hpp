@@ -18,25 +18,6 @@ parser_exception::parser_exception(int line, const std::string& matched):
     description_ = ss.str();
 }
 
-const char* parser_exception::what() const noexcept {
-    return description_.c_str();
-}
-
-int parser_exception::line() const noexcept {
-    return line_;
-}
-
-const std::string& parser_exception::matched() const noexcept {
-    return matched_;
-}
-
-Parser::Parser(std::istream &in): d_scanner(in)
-{}
-
-ast::Program& Parser::prog() {
-    return d_prog;
-}
-
 inline void Parser::error(const char*) {
     throw parser_exception(d_scanner.lineNr(), d_scanner.matched());
 }
