@@ -8,24 +8,20 @@
 #include "../scanner/scanner.h"
 
 #include <exception>
-#include <sstream>
 
 namespace microc {
 
 class parser_exception : public std::exception {
     public:
         parser_exception(int line, const std::string& matched);
-        virtual const char* what() const noexcept {
-            return description_.c_str();
-        }
-
+        virtual const char* what() const noexcept;
         int line() const noexcept { return line_; }
         const std::string& matched() const noexcept { return matched_; }
 
     private:
         int line_;
         std::string matched_;
-        std::string description_;
+        std::string what_;
 };
 
 #undef Parser

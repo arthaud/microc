@@ -2,6 +2,8 @@
 #include "../ast.hpp"
 #include "../parser/parserbase.h"
 
+#include <sstream>
+
 namespace microc {
 
 scanner_exception::scanner_exception(int line, const std::string& matched):
@@ -17,7 +19,11 @@ scanner_exception::scanner_exception(int line, const std::string& matched):
         ss << ", near \"" << matched << "\"";
     }
 
-    description_ = ss.str();
+    what_ = ss.str();
+}
+
+const char* scanner_exception::what() const noexcept {
+    return what_.c_str();
 }
 
 } // namespace microc

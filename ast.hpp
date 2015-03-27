@@ -24,6 +24,9 @@ class Program {
         std::vector<std::unique_ptr<Entity>> entities;
 };
 
+/*
+ * Entities
+ */
 class Entity {
     public:
         virtual ~Entity() = 0;

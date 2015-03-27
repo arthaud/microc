@@ -1,5 +1,7 @@
 #include "parser.h"
 
+#include <sstream>
+
 namespace microc {
 
 parser_exception::parser_exception(int line, const std::string& matched):
@@ -15,7 +17,11 @@ parser_exception::parser_exception(int line, const std::string& matched):
         ss << ", unexpected token \"" << matched << "\"";
     }
 
-    description_ = ss.str();
+    what_ = ss.str();
+}
+
+const char* parser_exception::what() const noexcept {
+    return what_.c_str();
 }
 
 inline void Parser::error(const char*) {
