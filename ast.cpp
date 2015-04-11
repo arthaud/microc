@@ -97,10 +97,10 @@ void UnaryExpression::accept(ExpressionVisitor& v) const {
 
 const char* UnaryExpression::operator_str(Operator op) {
     switch(op) {
-        case UnaryExpression::Operator::Plus:   return "+";
-        case UnaryExpression::Operator::Minus:  return "-";
-        case UnaryExpression::Operator::Not:    return "!";
-        case UnaryExpression::Operator::BitNot: return "~";
+        case UnaryOperator::Plus:   return "+";
+        case UnaryOperator::Minus:  return "-";
+        case UnaryOperator::Not:    return "!";
+        case UnaryOperator::BitNot: return "~";
         default: assert(false && "unknown unary operator");
     }
 }
@@ -111,24 +111,24 @@ void BinaryExpression::accept(ExpressionVisitor& v) const {
 
 const char* BinaryExpression::operator_str(Operator op) {
     switch(op) {
-        case BinaryExpression::Operator::Add:    return "+";
-        case BinaryExpression::Operator::Sub:    return "-";
-        case BinaryExpression::Operator::Mul:    return "*";
-        case BinaryExpression::Operator::Div:    return "/";
-        case BinaryExpression::Operator::Mod:    return "%";
-        case BinaryExpression::Operator::Or:     return "||";
-        case BinaryExpression::Operator::And:    return "&&";
-        case BinaryExpression::Operator::BitOr:  return "|";
-        case BinaryExpression::Operator::BitAnd: return "&";
-        case BinaryExpression::Operator::BitXor: return "^";
-        case BinaryExpression::Operator::Eq:     return "==";
-        case BinaryExpression::Operator::Neq:    return "!=";
-        case BinaryExpression::Operator::Inf:    return "<";
-        case BinaryExpression::Operator::InfEq:  return "<=";
-        case BinaryExpression::Operator::Sup:    return ">";
-        case BinaryExpression::Operator::SupEq:  return ">=";
-        case BinaryExpression::Operator::Lshift: return "<<";
-        case BinaryExpression::Operator::Rshift: return ">>";
+        case BinaryOperator::Add:    return "+";
+        case BinaryOperator::Sub:    return "-";
+        case BinaryOperator::Mul:    return "*";
+        case BinaryOperator::Div:    return "/";
+        case BinaryOperator::Mod:    return "%";
+        case BinaryOperator::Or:     return "||";
+        case BinaryOperator::And:    return "&&";
+        case BinaryOperator::BitOr:  return "|";
+        case BinaryOperator::BitAnd: return "&";
+        case BinaryOperator::BitXor: return "^";
+        case BinaryOperator::Eq:     return "==";
+        case BinaryOperator::Neq:    return "!=";
+        case BinaryOperator::Inf:    return "<";
+        case BinaryOperator::InfEq:  return "<=";
+        case BinaryOperator::Sup:    return ">";
+        case BinaryOperator::SupEq:  return ">=";
+        case BinaryOperator::Lshift: return "<<";
+        case BinaryOperator::Rshift: return ">>";
         default: assert(false && "unknown binary operator");
     }
 }
@@ -162,6 +162,10 @@ void VoidType::accept(TypeVisitor& v) const {
     v.visit(*this);
 }
 
+std::unique_ptr<Type> VoidType::clone() const {
+    return std::make_unique<VoidType>();
+}
+
 std::size_t ScalarType::size() const {
     return size_;
 }
@@ -170,20 +174,40 @@ void IntegerType::accept(TypeVisitor& v) const {
     v.visit(*this);
 }
 
+std::unique_ptr<Type> IntegerType::clone() const {
+    return std::make_unique<IntegerType>(size_);
+}
+
 void BooleanType::accept(TypeVisitor& v) const {
     v.visit(*this);
+}
+
+std::unique_ptr<Type> BooleanType::clone() const {
+    return std::make_unique<BooleanType>(size_);
 }
 
 void CharType::accept(TypeVisitor& v) const {
     v.visit(*this);
 }
 
+std::unique_ptr<Type> CharType::clone() const {
+    return std::make_unique<CharType>(size_);
+}
+
 void NullType::accept(TypeVisitor& v) const {
     v.visit(*this);
 }
 
+std::unique_ptr<Type> NullType::clone() const {
+    return std::make_unique<NullType>(size_);
+}
+
 void PointerType::accept(TypeVisitor& v) const {
     v.visit(*this);
+}
+
+std::unique_ptr<Type> PointerType::clone() const {
+    return std::make_unique<PointerType>(pointed_type_->clone(), size_);
 }
 
 /*

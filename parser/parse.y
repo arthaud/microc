@@ -139,51 +139,51 @@ expression
   : expression AFFECT expression
       { $$ = std::make_unique<ast::AffectationExpression>(std::move($1), std::move($3)); }
   | expression OR expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Or, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Or, std::move($1), std::move($3)); }
   | expression AND expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::And, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::And, std::move($1), std::move($3)); }
   | expression BIT_OR expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::BitOr, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::BitOr, std::move($1), std::move($3)); }
   | expression BIT_XOR expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::BitXor, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::BitXor, std::move($1), std::move($3)); }
   | expression BIT_AND expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::BitAnd, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::BitAnd, std::move($1), std::move($3)); }
   | expression EQ expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Eq, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Eq, std::move($1), std::move($3)); }
   | expression NEQ expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Neq, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Neq, std::move($1), std::move($3)); }
   | expression INF expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Inf, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Inf, std::move($1), std::move($3)); }
   | expression INFEQ expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Inf, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Inf, std::move($1), std::move($3)); }
   | expression INF expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::InfEq, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::InfEq, std::move($1), std::move($3)); }
   | expression SUP expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Sup, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Sup, std::move($1), std::move($3)); }
   | expression SUPEQ expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::SupEq, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::SupEq, std::move($1), std::move($3)); }
   | expression LSHIFT expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Lshift, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Lshift, std::move($1), std::move($3)); }
   | expression RSHIFT expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Rshift, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Rshift, std::move($1), std::move($3)); }
   | expression PLUS expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Add, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Add, std::move($1), std::move($3)); }
   | expression MINUS expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Sub, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Sub, std::move($1), std::move($3)); }
   | expression MULT expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Mul, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Mul, std::move($1), std::move($3)); }
   | expression DIV expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Div, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Div, std::move($1), std::move($3)); }
   | expression MOD expression
-      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryExpression::Operator::Mod, std::move($1), std::move($3)); }
+      { $$ = std::make_unique<ast::BinaryExpression>(ast::BinaryOperator::Mod, std::move($1), std::move($3)); }
   | PLUS expression %prec NOT
-      { $$ = std::make_unique<ast::UnaryExpression>(ast::UnaryExpression::Operator::Plus, std::move($2)); }
+      { $$ = std::make_unique<ast::UnaryExpression>(ast::UnaryOperator::Plus, std::move($2)); }
   | MINUS expression %prec NOT
-      { $$ = std::make_unique<ast::UnaryExpression>(ast::UnaryExpression::Operator::Minus, std::move($2)); }
+      { $$ = std::make_unique<ast::UnaryExpression>(ast::UnaryOperator::Minus, std::move($2)); }
   | NOT expression
-      { $$ = std::make_unique<ast::UnaryExpression>(ast::UnaryExpression::Operator::Not, std::move($2)); }
+      { $$ = std::make_unique<ast::UnaryExpression>(ast::UnaryOperator::Not, std::move($2)); }
   | BIT_NOT expression
-      { $$ = std::make_unique<ast::UnaryExpression>(ast::UnaryExpression::Operator::BitNot, std::move($2)); }
+      { $$ = std::make_unique<ast::UnaryExpression>(ast::UnaryOperator::BitNot, std::move($2)); }
   | MULT expression %prec NOT
       { $$ = std::make_unique<ast::AccessExpression>(std::move($2)); }
   | OPAR type CPAR expression %prec NOT

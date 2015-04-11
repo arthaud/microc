@@ -256,6 +256,8 @@ class UnaryExpression : public Expression {
         std::unique_ptr<Expression> expression;
 };
 
+typedef UnaryExpression::Operator UnaryOperator;
+
 class BinaryExpression : public Expression {
     public:
         enum class Operator {
@@ -295,6 +297,8 @@ class BinaryExpression : public Expression {
         std::unique_ptr<Expression> left;
         std::unique_ptr<Expression> right;
 };
+
+typedef BinaryExpression::Operator BinaryOperator;
 
 class AffectationExpression : public Expression {
     public:
@@ -357,6 +361,7 @@ class Type {
     public:
         virtual ~Type() = 0;
         virtual void accept(TypeVisitor& v) const = 0;
+        virtual std::unique_ptr<Type> clone() const = 0;
         virtual std::size_t size() const = 0;
 };
 
@@ -364,6 +369,7 @@ class VoidType : public Type {
     public:
         virtual std::size_t size() const;
         virtual void accept(TypeVisitor&) const;
+        virtual std::unique_ptr<Type> clone() const;
 };
 
 class ScalarType : public Type {
@@ -371,7 +377,7 @@ class ScalarType : public Type {
         explicit ScalarType(std::size_t size): size_(size) {}
         virtual std::size_t size() const;
 
-    private:
+    protected:
         std::size_t size_;
 };
 
@@ -379,24 +385,28 @@ class IntegerType : public ScalarType {
     public:
         using ScalarType::ScalarType;
         virtual void accept(TypeVisitor&) const;
+        virtual std::unique_ptr<Type> clone() const;
 };
 
 class BooleanType : public ScalarType {
     public:
         using ScalarType::ScalarType;
         virtual void accept(TypeVisitor&) const;
+        virtual std::unique_ptr<Type> clone() const;
 };
 
 class CharType : public ScalarType {
     public:
         using ScalarType::ScalarType;
         virtual void accept(TypeVisitor&) const;
+        virtual std::unique_ptr<Type> clone() const;
 };
 
 class NullType : public ScalarType {
     public:
         using ScalarType::ScalarType;
         virtual void accept(TypeVisitor&) const;
+        virtual std::unique_ptr<Type> clone() const;
 };
 
 class PointerType : public ScalarType {
@@ -407,7 +417,8 @@ class PointerType : public ScalarType {
         {}
 
         virtual void accept(TypeVisitor&) const;
-        Type* pointed_type() const { return pointed_type_.get(); }
+        virtual std::unique_ptr<Type> clone() const;
+        const Type* pointed_type() const { return pointed_type_.get(); }
 
     private:
         std::unique_ptr<Type> pointed_type_;
